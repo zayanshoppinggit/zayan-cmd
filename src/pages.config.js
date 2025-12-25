@@ -6,6 +6,7 @@ import Assignments from './pages/Assignments';
 import Groups from './pages/Groups';
 import Communications from './pages/Communications';
 import Settings from './pages/Settings';
+import CustomerPortal from './pages/CustomerPortal';
 import __Layout from './Layout.jsx';
 
 
@@ -18,6 +19,7 @@ export const PAGES = {
     "Groups": Groups,
     "Communications": Communications,
     "Settings": Settings,
+    "CustomerPortal": CustomerPortal,
 }
 
 export const pagesConfig = {
