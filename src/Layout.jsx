@@ -161,9 +161,13 @@ export default function Layout({ children, currentPageName }) {
             <DropdownMenuTrigger asChild>
               <button className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 transition-colors ${sidebarCollapsed ? 'justify-center' : ''}`}>
                 <Avatar className="h-8 w-8 bg-gradient-to-br from-indigo-400 to-purple-500">
-                  <AvatarFallback className="bg-transparent text-white text-sm">
-                    {user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
-                  </AvatarFallback>
+                  {user?.profile_picture_url ? (
+                    <img src={user.profile_picture_url} alt={user.full_name} className="w-full h-full object-cover" />
+                  ) : (
+                    <AvatarFallback className="bg-transparent text-white text-sm">
+                      {user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
                 {!sidebarCollapsed && (
                   <div className="flex-1 text-left">

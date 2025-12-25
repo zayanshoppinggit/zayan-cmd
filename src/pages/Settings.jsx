@@ -7,7 +7,9 @@ import {
   Shield, 
   Palette,
   Save,
-  UserPlus
+  UserPlus,
+  Upload,
+  Camera
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,6 +53,16 @@ export default function Settings() {
     customer_portal_enabled: true
   });
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const user = await base44.auth.me();
+      setCurrentUser(user);
+    };
+    loadUser();
+  }, []);
 
   const { data: users = [] } = useQuery({
     queryKey: ['users'],
@@ -123,6 +135,22 @@ export default function Settings() {
     setSaving(false);
   };
 
+  const handleProfilePictureUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      await base44.auth.updateMe({ profile_picture_url: file_url });
+      const updatedUser = await base44.auth.me();
+      setCurrentUser(updatedUser);
+    } catch (error) {
+      console.error("Failed to upload profile picture:", error);
+    }
+    setUploading(false);
+  };
+
   return (
     <div className="p-8 bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 min-h-screen">
       <div className="mb-8">
@@ -130,12 +158,70 @@ export default function Settings() {
         <p className="text-slate-500 mt-1">Manage your application settings</p>
       </div>
 
-      <Tabs defaultValue="users" className="space-y-6">
+      <Tabs defaultValue="profile" className="space-y-6">
         <TabsList className="bg-white border">
+          <TabsTrigger value="profile">My Profile</TabsTrigger>
           <TabsTrigger value="users">Users & Access</TabsTrigger>
           <TabsTrigger value="business">Business Info</TabsTrigger>
           <TabsTrigger value="notifications">Notifications</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="profile">
+          <Card className="border-0 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-lg">Profile Settings</CardTitle>
+              <CardDescription>Manage your personal information and profile picture</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center gap-6">
+                <div className="relative">
+                  <div className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-indigo-500 to-purple-500">
+                    {currentUser?.profile_picture_url ? (
+                      <img src={currentUser.profile_picture_url} alt={currentUser.full_name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-white text-3xl font-semibold">
+                        {currentUser?.full_name?.charAt(0) || currentUser?.email?.charAt(0) || 'U'}
+                      </div>
+                    )}
+                  </div>
+                  <label className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center cursor-pointer hover:bg-indigo-700 transition-colors">
+                    <Camera className="w-4 h-4 text-white" />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleProfilePictureUpload}
+                      className="hidden"
+                      disabled={uploading}
+                    />
+                  </label>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-800">{currentUser?.full_name || 'User'}</h3>
+                  <p className="text-sm text-slate-500">{currentUser?.email}</p>
+                  <p className="text-xs text-slate-400 mt-2">
+                    {uploading ? "Uploading..." : "Click camera icon to change profile picture"}
+                  </p>
+                </div>
+              </div>
+              <div className="border-t pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Full Name</Label>
+                    <Input value={currentUser?.full_name || ''} disabled className="bg-slate-50" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Email</Label>
+                    <Input value={currentUser?.email || ''} disabled className="bg-slate-50" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Role</Label>
+                    <Input value={currentUser?.role === 'admin' ? 'Administrator' : 'Customer'} disabled className="bg-slate-50" />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="users">
           <Card className="border-0 shadow-sm">
