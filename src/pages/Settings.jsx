@@ -37,10 +37,61 @@ export default function Settings() {
   const [inviteRole, setInviteRole] = useState("user");
   const [inviting, setInviting] = useState(false);
   const [inviteSuccess, setInviteSuccess] = useState(false);
+  const [businessInfo, setBusinessInfo] = useState({
+    business_name: "",
+    contact_email: "",
+    phone_number: "",
+    website: "",
+    address: ""
+  });
+  const [notifications, setNotifications] = useState({
+    email_notifications: true,
+    new_service_alerts: true,
+    status_change_alerts: true,
+    customer_portal_enabled: true
+  });
+  const [saving, setSaving] = useState(false);
 
   const { data: users = [] } = useQuery({
     queryKey: ['users'],
     queryFn: () => base44.entities.User.list(),
+  });
+
+  const { data: settings = [], isLoading: loadingSettings } = useQuery({
+    queryKey: ['businessSettings'],
+    queryFn: () => base44.entities.BusinessSettings.list(),
+  });
+
+  useEffect(() => {
+    if (settings.length > 0) {
+      const currentSettings = settings[0];
+      setBusinessInfo({
+        business_name: currentSettings.business_name || "",
+        contact_email: currentSettings.contact_email || "",
+        phone_number: currentSettings.phone_number || "",
+        website: currentSettings.website || "",
+        address: currentSettings.address || ""
+      });
+      setNotifications({
+        email_notifications: currentSettings.email_notifications !== false,
+        new_service_alerts: currentSettings.new_service_alerts !== false,
+        status_change_alerts: currentSettings.status_change_alerts !== false,
+        customer_portal_enabled: currentSettings.customer_portal_enabled !== false
+      });
+    }
+  }, [settings]);
+
+  const saveMutation = useMutation({
+    mutationFn: async (data) => {
+      if (settings.length > 0) {
+        return await base44.entities.BusinessSettings.update(settings[0].id, data);
+      } else {
+        return await base44.entities.BusinessSettings.create(data);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['businessSettings'] });
+    },
   });
 
   const handleInvite = async () => {
@@ -58,6 +109,18 @@ export default function Settings() {
       console.error("Failed to invite user:", error);
     }
     setInviting(false);
+  };
+
+  const handleSaveBusinessInfo = async () => {
+    setSaving(true);
+    await saveMutation.mutateAsync({ ...businessInfo, ...notifications });
+    setSaving(false);
+  };
+
+  const handleSaveNotifications = async () => {
+    setSaving(true);
+    await saveMutation.mutateAsync({ ...businessInfo, ...notifications });
+    setSaving(false);
   };
 
   return (
@@ -128,32 +191,66 @@ export default function Settings() {
               <CardDescription>Your business details displayed across the system</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Business Name</Label>
-                  <Input defaultValue="Zayan Services India" />
+              {loadingSettings ? (
+                <div className="space-y-4">
+                  <div className="h-10 bg-slate-100 rounded animate-pulse" />
+                  <div className="h-10 bg-slate-100 rounded animate-pulse" />
                 </div>
-                <div className="space-y-2">
-                  <Label>Contact Email</Label>
-                  <Input type="email" placeholder="contact@example.com" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Phone Number</Label>
-                  <Input placeholder="+91 XXXXX XXXXX" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Website</Label>
-                  <Input placeholder="https://example.com" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Address</Label>
-                <Input placeholder="Full business address" />
-              </div>
-              <Button className="bg-indigo-600 hover:bg-indigo-700">
-                <Save className="w-4 h-4 mr-2" />
-                Save Changes
-              </Button>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label>Business Name</Label>
+                      <Input 
+                        value={businessInfo.business_name}
+                        onChange={(e) => setBusinessInfo(prev => ({ ...prev, business_name: e.target.value }))}
+                        placeholder="Your business name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Contact Email</Label>
+                      <Input 
+                        type="email" 
+                        value={businessInfo.contact_email}
+                        onChange={(e) => setBusinessInfo(prev => ({ ...prev, contact_email: e.target.value }))}
+                        placeholder="contact@example.com" 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Phone Number</Label>
+                      <Input 
+                        value={businessInfo.phone_number}
+                        onChange={(e) => setBusinessInfo(prev => ({ ...prev, phone_number: e.target.value }))}
+                        placeholder="+91 XXXXX XXXXX" 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Website</Label>
+                      <Input 
+                        value={businessInfo.website}
+                        onChange={(e) => setBusinessInfo(prev => ({ ...prev, website: e.target.value }))}
+                        placeholder="https://example.com" 
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Address</Label>
+                    <Input 
+                      value={businessInfo.address}
+                      onChange={(e) => setBusinessInfo(prev => ({ ...prev, address: e.target.value }))}
+                      placeholder="Full business address" 
+                    />
+                  </div>
+                  <Button 
+                    onClick={handleSaveBusinessInfo}
+                    disabled={saving}
+                    className="bg-indigo-600 hover:bg-indigo-700"
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    {saving ? "Saving..." : "Save Changes"}
+                  </Button>
+                </>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -174,30 +271,50 @@ export default function Settings() {
                     <p className="font-medium text-slate-800">Email Notifications</p>
                     <p className="text-sm text-slate-500">Receive updates via email</p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch 
+                    checked={notifications.email_notifications}
+                    onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, email_notifications: checked }))}
+                  />
                 </div>
                 <div className="flex items-center justify-between py-3 border-b">
                   <div>
                     <p className="font-medium text-slate-800">New Service Alerts</p>
                     <p className="text-sm text-slate-500">Get notified when new service is assigned</p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch 
+                    checked={notifications.new_service_alerts}
+                    onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, new_service_alerts: checked }))}
+                  />
                 </div>
                 <div className="flex items-center justify-between py-3 border-b">
                   <div>
                     <p className="font-medium text-slate-800">Status Change Alerts</p>
                     <p className="text-sm text-slate-500">Notify when service status changes</p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch 
+                    checked={notifications.status_change_alerts}
+                    onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, status_change_alerts: checked }))}
+                  />
                 </div>
                 <div className="flex items-center justify-between py-3">
                   <div>
                     <p className="font-medium text-slate-800">Customer Portal Access</p>
                     <p className="text-sm text-slate-500">Allow customers to view their services</p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch 
+                    checked={notifications.customer_portal_enabled}
+                    onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, customer_portal_enabled: checked }))}
+                  />
                 </div>
               </div>
+              <Button 
+                onClick={handleSaveNotifications}
+                disabled={saving}
+                className="bg-indigo-600 hover:bg-indigo-700"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                {saving ? "Saving..." : "Save Preferences"}
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>

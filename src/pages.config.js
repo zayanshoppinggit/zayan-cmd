@@ -1,25 +1,25 @@
-import Dashboard from './pages/Dashboard';
-import Customers from './pages/Customers';
-import CustomerDetail from './pages/CustomerDetail';
-import Services from './pages/Services';
 import Assignments from './pages/Assignments';
-import Groups from './pages/Groups';
 import Communications from './pages/Communications';
-import Settings from './pages/Settings';
+import CustomerDetail from './pages/CustomerDetail';
 import CustomerPortal from './pages/CustomerPortal';
+import Customers from './pages/Customers';
+import Dashboard from './pages/Dashboard';
+import Groups from './pages/Groups';
+import Services from './pages/Services';
+import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Dashboard": Dashboard,
-    "Customers": Customers,
-    "CustomerDetail": CustomerDetail,
-    "Services": Services,
     "Assignments": Assignments,
-    "Groups": Groups,
     "Communications": Communications,
-    "Settings": Settings,
+    "CustomerDetail": CustomerDetail,
     "CustomerPortal": CustomerPortal,
+    "Customers": Customers,
+    "Dashboard": Dashboard,
+    "Groups": Groups,
+    "Services": Services,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {
