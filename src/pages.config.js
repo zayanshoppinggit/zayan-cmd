@@ -4,6 +4,8 @@ import CustomerDetail from './pages/CustomerDetail';
 import Services from './pages/Services';
 import Assignments from './pages/Assignments';
 import Groups from './pages/Groups';
+import Communications from './pages/Communications';
+import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
@@ -14,6 +16,8 @@ export const PAGES = {
     "Services": Services,
     "Assignments": Assignments,
     "Groups": Groups,
+    "Communications": Communications,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {
