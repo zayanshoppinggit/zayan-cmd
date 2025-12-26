@@ -14,7 +14,8 @@ import {
   X,
   ChevronRight,
   Wrench,
-  FolderOpen
+  FolderOpen,
+  Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -67,6 +68,7 @@ export default function Layout({ children, currentPageName }) {
     { name: "Assignments", icon: ClipboardList, page: "Assignments" },
     { name: "Groups", icon: FolderOpen, page: "Groups" },
     { name: "Communications", icon: MessageSquare, page: "Communications" },
+    { name: "Automation", icon: Zap, page: "AutomationRules" },
     { name: "Settings", icon: Settings, page: "Settings" },
   ];
 

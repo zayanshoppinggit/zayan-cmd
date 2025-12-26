@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Groups from './pages/Groups';
 import Services from './pages/Services';
 import Settings from './pages/Settings';
+import AutomationRules from './pages/AutomationRules';
 import __Layout from './Layout.jsx';
 
 
@@ -20,6 +21,7 @@ export const PAGES = {
     "Groups": Groups,
     "Services": Services,
     "Settings": Settings,
+    "AutomationRules": AutomationRules,
 }
 
 export const pagesConfig = {
