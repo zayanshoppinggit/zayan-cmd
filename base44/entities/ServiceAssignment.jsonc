@@ -1,0 +1,70 @@
+{
+  "name": "ServiceAssignment",
+  "type": "object",
+  "properties": {
+    "customer_id": {
+      "type": "string",
+      "description": "Customer ID"
+    },
+    "service_id": {
+      "type": "string",
+      "description": "Service ID"
+    },
+    "service_name": {
+      "type": "string",
+      "description": "Service name (denormalized for display)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new_request",
+        "work_started",
+        "in_progress",
+        "waiting_for_parts",
+        "completed",
+        "on_hold",
+        "cancelled"
+      ],
+      "default": "new_request",
+      "description": "Current service status"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Service start date"
+    },
+    "expected_completion_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Expected completion date"
+    },
+    "actual_completion_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Actual completion date"
+    },
+    "assigned_technician": {
+      "type": "string",
+      "description": "Assigned technician name"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Service notes"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium"
+    }
+  },
+  "required": [
+    "customer_id",
+    "service_id",
+    "service_name"
+  ]
+}

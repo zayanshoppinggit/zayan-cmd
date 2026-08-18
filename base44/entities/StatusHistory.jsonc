@@ -1,0 +1,34 @@
+{
+  "name": "StatusHistory",
+  "type": "object",
+  "properties": {
+    "assignment_id": {
+      "type": "string",
+      "description": "Service assignment ID"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Customer ID for quick filtering"
+    },
+    "previous_status": {
+      "type": "string",
+      "description": "Previous status"
+    },
+    "new_status": {
+      "type": "string",
+      "description": "New status"
+    },
+    "changed_by": {
+      "type": "string",
+      "description": "User who made the change"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes about the status change"
+    }
+  },
+  "required": [
+    "assignment_id",
+    "new_status"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "name": "Communication",
+  "type": "object",
+  "properties": {
+    "customer_id": {
+      "type": "string",
+      "description": "Customer ID (null for group/bulk messages)"
+    },
+    "customer_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of customer IDs for bulk messages"
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "email",
+        "sms",
+        "whatsapp"
+      ],
+      "description": "Communication channel"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Message subject (for email)"
+    },
+    "message": {
+      "type": "string",
+      "description": "Message content"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "sent",
+        "failed",
+        "pending"
+      ],
+      "default": "sent"
+    },
+    "sent_to_group": {
+      "type": "string",
+      "description": "Group ID if sent to a group"
+    },
+    "is_bulk": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "channel",
+    "message"
+  ]
+}

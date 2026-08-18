@@ -1,0 +1,52 @@
+{
+  "name": "AutomationRule",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Rule name"
+    },
+    "trigger": {
+      "type": "string",
+      "enum": [
+        "status_change",
+        "service_completed",
+        "service_on_hold",
+        "new_service"
+      ],
+      "description": "What triggers this automation"
+    },
+    "status_value": {
+      "type": "string",
+      "description": "Specific status that triggers (for status_change)"
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "whatsapp",
+        "sms",
+        "email"
+      ],
+      "description": "Channel to send message"
+    },
+    "message_template": {
+      "type": "string",
+      "description": "Message to send (supports {{customer_name}}, {{service_name}}, {{status}})"
+    },
+    "subject_template": {
+      "type": "string",
+      "description": "Subject for email"
+    },
+    "is_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether rule is active"
+    }
+  },
+  "required": [
+    "name",
+    "trigger",
+    "channel",
+    "message_template"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "Service",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Service name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Service description"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Icon name from lucide-react"
+    },
+    "default_statuses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Default workflow statuses for this service"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether service is currently offered"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

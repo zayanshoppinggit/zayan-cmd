@@ -1,0 +1,21 @@
+{
+  "name": "CustomerGroup",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Group name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Group description"
+    },
+    "color": {
+      "type": "string",
+      "description": "Color code for the group badge"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

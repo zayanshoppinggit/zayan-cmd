@@ -1,0 +1,32 @@
+{
+  "name": "MessageTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Template name"
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "email",
+        "sms",
+        "whatsapp",
+        "all"
+      ],
+      "description": "Channel this template is for"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Email subject template"
+    },
+    "message": {
+      "type": "string",
+      "description": "Message template with placeholders like {{customer_name}}"
+    }
+  },
+  "required": [
+    "name",
+    "message"
+  ]
+}
